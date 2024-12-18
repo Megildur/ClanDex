@@ -26,7 +26,7 @@ logger.addHandler(console_handler)
 
 class MyBot(commands.Bot):
     def __init__(self) -> None:
-        super().__init__(command_prefix='!b', intents=intents)
+        super().__init__(command_prefix='!c', intents=intents)
 
     async def setup_hook(self) -> None:
         print('loading cogs...')
