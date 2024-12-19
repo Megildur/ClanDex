@@ -9,11 +9,16 @@ class SpawnSettings(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
+    async def cog_load(self) -> None:
+        async with aiosqlite.connect(spawn_channel) as db:
+            await db.execute('CREATE TABLE IF NOT EXISTS settings (guild_id INTEGER, spawn_channel INTEGER)')
+            await db.commit()
+
     @app_commands.command(name='set-spawn-channel', description='Sets the spawn channel')
     @app_commands.describe(channel='The channel to set as the spawn channel')
     async def set_spawn_channel(self, interaction: discord.Interaction, channel: discord.TextChannel) -> None:
         async with aiosqlite.connect(spawn_channel) as db:
-            async with db.execute('SELECT * FROM settings WHERE guild_id = ?', (interaction.guild.id,)) as cursor:
+            async with db.execute('SELECT * FROM settings WHERE guild_id = ?', (interaction.guild_id,)) as cursor:
                 result = await cursor.fetchone()
                 if result is None:
                     await db.execute('INSERT INTO settings (guild_id, spawn_channel) VALUES (?, ?)', (interaction.guild_id, channel.id))
@@ -30,7 +35,7 @@ class SpawnSettings(commands.Cog):
     @app_commands.command(name='remove-spawn-channel', description='Removes the spawn channel')
     async def remove_spawn_channel(self, interaction: discord.Interaction) -> None:
         async with aiosqlite.connect(spawn_channel) as db:
-            async with db.execute('SELECT * FROM settings WHERE guild_id = ?', (interaction.guild.id,)) as cursor:
+            async with db.execute('SELECT * FROM settings WHERE guild_id = ?', (interaction.guild_id,)) as cursor:
                 result = await cursor.fetchone()
                 if result is None:
                     embed = discord.Embed(title='Spawn Channel Not Set', description='Spawn channel not set', color=discord.Color.red())
@@ -46,7 +51,7 @@ class SpawnSettings(commands.Cog):
     @app_commands.command(name='current-spawn-channel', description='Shows the spawn channel')
     async def current_spawn_channel(self, interaction: discord.Interaction) -> None:
         async with aiosqlite.connect(spawn_channel) as db:
-            async with db.execute('SELECT * FROM settings WHERE guild_id = ?', (interaction.guild.id,)) as cursor:
+            async with db.execute('SELECT * FROM settings WHERE guild_id = ?', (interaction.guild_id,)) as cursor:
                 result = await cursor.fetchone()
                 if result is None:
                     embed = discord.Embed(title='Spawn Channel Not Set', description='Spawn channel not set', color=discord.Color.red())
