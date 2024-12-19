@@ -63,24 +63,16 @@ class SyncCog(commands.Cog):
         all_commands = [cmd.name for cmd in self.bot.tree.get_commands()]
         print(f'Synced commands: {all_commands}')
         mod_group = discord.utils.get(self.bot.tree.get_commands(), name='mod')
-        admin_group = discord.utils.get(self.bot.tree.get_commands(), name='admin')
         if mod_group:
             mod_commands = [cmd.name for cmd in mod_group.commands]
             print(f'Synced mod commands: {mod_commands}')
         else:
             print('Mod group not found')
-        if admin_group:
-            admin_commands = [cmd.name for cmd in admin_group.commands]
-            print(f'Synced admin commands: {admin_commands}')
-        else:
-            print('Admin group not found')
         embed = discord.Embed(title='Sync Complete', description='The bot has been synced successfully.', color=discord.Color.green())
         embed.add_field(name='**SYNCED COMMANDS**', value=f"Synced {len(synced)} command groups")
         embed.add_field(name='**GROUPS SYNCED**', value=f"Synced commands: {', '.join(all_commands)}")
         if mod_group:
             embed.add_field(name=f"{len(mod_commands)} MODERATION COMMANDS SYNCED", value=f"Synced commands: {', '.join(mod_commands)}")
-        if admin_group:
-            embed.add_field(name=f"{len(admin_commands)} ADMIN COMMANDS SYNCED", value=f"Synced commands: {', '.join(admin_commands)}")
         await ctx.send(embed=embed)
             
     @commands.command(name='syncg', description='Syncs the bot', hidden=True)
