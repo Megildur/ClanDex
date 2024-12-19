@@ -16,6 +16,7 @@ class SpawnSettings(commands.Cog):
 
     @app_commands.command(name='set-spawn-channel', description='Sets the spawn channel')
     @app_commands.describe(channel='The channel to set as the spawn channel')
+    @app_commands.default_permissions(manage_guild=True)
     async def set_spawn_channel(self, interaction: discord.Interaction, channel: discord.TextChannel) -> None:
         async with aiosqlite.connect(spawn_channel) as db:
             async with db.execute('SELECT * FROM settings WHERE guild_id = ?', (interaction.guild_id,)) as cursor:
@@ -33,6 +34,7 @@ class SpawnSettings(commands.Cog):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @app_commands.command(name='remove-spawn-channel', description='Removes the spawn channel')
+    @app_commands.default_permissions(manage_guild=True)
     async def remove_spawn_channel(self, interaction: discord.Interaction) -> None:
         async with aiosqlite.connect(spawn_channel) as db:
             async with db.execute('SELECT * FROM settings WHERE guild_id = ?', (interaction.guild_id,)) as cursor:
