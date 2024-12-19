@@ -30,6 +30,7 @@ class Capture(commands.Cog):
                     for i in result:
                         embed.add_field(name=f'{i[0]}', value=f'{i[1]}', inline=False)
                 await interaction.response.send_message(embed=embed, ephemeral=True)
+                
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Capture(bot))
